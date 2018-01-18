@@ -24,7 +24,7 @@ public class HomeController {
 
 		Response response = new Response();
 
-		if (Validation.isValid(employee)) {
+		if (!Validation.isValid(employee)) {
 			response.setMessage("Please! Check the The Credential............");
 			return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
 		}
