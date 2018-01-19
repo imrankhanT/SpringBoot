@@ -13,10 +13,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.bridgeit.controller.HomeController;
+import com.bridgeit.controller.LoginController;
 import com.bridgeit.model.Employee;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,10 +25,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class TestSpringBoot {
+public class LoginSpringBootTest {
 
 	@InjectMocks
-	HomeController homeController;
+	LoginController loginController;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -40,58 +41,31 @@ public class TestSpringBoot {
 	}
 
 	@Test
-	public void testLoginEmployee() {
+	public void testLoginEmployee() throws Exception {
+		String message = "Login Sucessfully.......";
 		Employee employee = new Employee();
 		employee.setEmail("imterdal@gmail.com");
 		employee.setPassword("qwertyuio");
-		System.out.println(homeController);
-		try {
-			this.mvc.perform(MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON)
-					.content(jsonObject(employee))).andExpect(status().isOk()).andDo(print());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.mvc.perform(MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON)
+				.content(jsonObject(employee))).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value(message)).andDo(print());
 	}
 
 	@Test
 	public void testLoginFail() throws Exception {
+		String message = "Invalid Emial_Id Or password......";
 		Employee employee = new Employee();
 		employee.setEmail("imterdal@gmail.com");
 		employee.setPassword("quuiyurweqrw");
 		this.mvc.perform(MockMvcRequestBuilders.post("/login").contentType(MediaType.APPLICATION_JSON)
-				.content(jsonObject(employee))).andExpect(status().isBadRequest()).andDo(print());
+				.content(jsonObject(employee))).andExpect(status().isBadRequest())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value(message)).andDo(print());
 	}
 
-	private String jsonObject(Employee employee) {
+	private String jsonObject(Employee employee) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = null;
-		try {
-			jsonString = mapper.writeValueAsString(employee);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+		jsonString = mapper.writeValueAsString(employee);
 		return jsonString;
-	}
-
-	@Test
-	public void testRegisterEmployee() throws Exception {
-		Employee employee = new Employee();
-		employee.setEmpName("AdamVoges");
-		employee.setEmail("voges@gmail.com");
-		employee.setPassword("qwertyio");
-		employee.setPhone("7856748756");
-		this.mvc.perform(MockMvcRequestBuilders.post("/register").contentType(MediaType.APPLICATION_JSON)
-				.content(jsonObject(employee))).andExpect(status().isOk()).andDo(print());
-	}
-
-	@Test
-	public void testRegisterExsists() throws Exception {
-		Employee employee = new Employee();
-		employee.setEmpName("Imran khan");
-		employee.setEmail("imterdal@gmail.com");
-		employee.setPassword("qwertyuio");
-		employee.setPhone("8978678978");
-		this.mvc.perform(MockMvcRequestBuilders.post("/register").contentType(MediaType.APPLICATION_JSON)
-				.content(jsonObject(employee))).andExpect(status().isOk()).andDo(print());
 	}
 }

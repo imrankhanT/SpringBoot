@@ -10,41 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgeit.model.Employee;
 import com.bridgeit.model.Response;
-import com.bridgeit.service.ServiceEmpl;
-import com.bridgeit.validation.Validation;
+import com.bridgeit.service.ServiceImpl;
 
 @RestController
-public class HomeController {
+public class LoginController {
 
 	@Autowired
-	ServiceEmpl service;
-
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<?> registerEmployee(@RequestBody Employee employee) {
-
-		Response response = new Response();
-
-		if (!Validation.isValid(employee)) {
-			response.setMessage("Please! Check the The Credential............");
-			return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
-		}
-
-		boolean isSaved = service.save(employee);
-		if (isSaved) {
-			response.setMessage("Registration Sucessfull.........");
-			return new ResponseEntity<Response>(response, HttpStatus.OK);
-		} else {
-			response.setMessage("Email_Id Or Password Already Exsists.........");
-			return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
-		}
-	}
+	ServiceImpl service;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> loginEmployee(@RequestBody Employee employee) {
 		Response response = new Response();
 		String empName = service.login(employee);
 		if (empName != null) {
-			response.setName(empName);
 			response.setMessage("Login Sucessfully.......");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		} else {

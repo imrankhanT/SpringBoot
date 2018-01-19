@@ -9,4 +9,6 @@ public interface ServiceMethods extends CrudRepository<Employee, String> {
 
 	public Employee findEmployeeByPhone(String phone);
 
+	public Employee findEmployeeById(int id);
+
 }

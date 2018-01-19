@@ -1,12 +1,14 @@
 package com.bridgeit.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bridgeit.model.Employee;
 
 @Service
-public class ServiceEmpl {
+public class ServiceImpl {
 
 	@Autowired
 	private ServiceMethods serviceMethods;
@@ -44,4 +46,12 @@ public class ServiceEmpl {
 		return emp;
 	}
 
+	public Employee getEmployeeById(int id) {
+		Employee employee = serviceMethods.findEmployeeById(id);
+		return employee;
+	}
+
+	public List<Employee> getAllEmployee() {
+		return (List<Employee>) serviceMethods.findAll();
+	}
 }
